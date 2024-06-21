@@ -1,6 +1,6 @@
 version: "3.7"
 services:
-  app:
+  app_p2:
     build:
       args:
         user: davi
@@ -11,19 +11,19 @@ services:
     environment:
       - COMPOSER_MEMORY_LIMIT=-1
     depends_on:
-      - db
+      - db_02
     volumes:
       - ./:/var/www
     networks:
       - lahmi
       
-  db:
+  db_02:
     image: mysql:8.0
     environment:
-      MYSQL_DATABASE: local_laravel
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_PASSWORD: secret
-      MYSQL_USER: local_developer
+      MYSQL_DATABASE: laravel
+      MYSQL_ROOT_PASSWORD:
+      MYSQL_PASSWORD:
+      MYSQL_USER: root
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
@@ -35,12 +35,12 @@ services:
     networks:
       - lahmi
 
-  phpmyadmin:
+  phpmyadmin_02:
     image: phpmyadmin/phpmyadmin
     links:
-      - db
+      - db_02
     environment:
-      PMA_HOST: db
+      PMA_HOST: db_02
       PMA_PORT: 3306
       PMA_ARBITRARY: 1
     restart: always
@@ -49,13 +49,13 @@ services:
     networks:
       - lahmi
 
-  nginx:
+  nginx_02:
     image: nginx:alpine
     ports:
       - 8005:80
     depends_on:
-      - db
-      - app
+      - db_02
+      - app_p2
     volumes:
       - ./:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
